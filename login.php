@@ -1,8 +1,8 @@
 <?php
-   require_once ('connectvars.php');
+   
 
    if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
-        // имя пользователя и/или его пароль не были введены
+        // имя пользователя и/или его пароль НЕ были введены
         // поэтому отправляются заголовки аутентификации
         header ('HTTP/1.1 401 Unauthorized');
         header ('WWW-Authenticate:Basic realm="Mismatch"'); // благодаря Basic realm - браузер запоминает правильно-введенный логин и пароль
@@ -10,11 +10,12 @@
         // если аутентификация успешная > функция exit() Не вызывается
         exit ('<meta charset="utf-8"><h2> Несоответствия </h2> <h5>необходимо ввести имя и пароль для входа</h5>');
    }
-
+   require_once('connectvars.php');
+   
    // подключение к базе
    $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME); 
 
-   // назначение переменным, введенных данных пользователем для аутентификации
+   // назначение переменным, введенных данных пользователем при аутентификации
    $user_username = mysqli_real_escape_string($dbc, trim($_SERVER['PHP_AUTH_USER']));
    $user_password = mysqli_real_escape_string($dbc, trim($_SERVER['PHP_AUTH_PW']));
 
