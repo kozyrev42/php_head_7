@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Mismatch - Просмотр профиля</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
-  <h3>Mismatch - Просмотр профиля</h3>
 
-<?php
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Mismatch - Просмотр профиля</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <h3>Mismatch - Просмотр профиля</h3>
+
+    <?php
    require_once('appvars.php');
    require_once('connectvars.php');
 
@@ -16,11 +18,11 @@
    $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
    // Получить данные профиля из базы данных
-   if (!isset($_GET['user_id'])) {
+   if (!isset($_COOKIE['user_id'])) {
       $query = "SELECT username, first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '$user_id'";
    }
    else {
-      $query = "SELECT username, first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '" . $_GET['user_id'] . "'";
+      $query = "SELECT username, first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '" . $_COOKIE['user_id'] ."' ";
    }
    $data = mysqli_query($dbc, $query);
 
@@ -93,5 +95,6 @@
 
    mysqli_close($dbc);
 ?>
-</body> 
+</body>
+
 </html>

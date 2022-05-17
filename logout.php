@@ -14,5 +14,5 @@
     $home_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';
     // передаём путь на выполнение заголовку
     // header ('Location: http://localhost/php_head_7/index.php');
-    // header ('Location: '. $home_url);
+    header ('Location: '. $home_url);
 ?>

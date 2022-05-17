@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Mismatch - редактирование профиля </title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
-  <h3>Mismatch - редактирование профиля </h3>
 
-<?php
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Mismatch - редактирование профиля </title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+    <h3>Mismatch - редактирование профиля </h3>
+
+    <?php
    require_once('appvars.php');
    require_once('connectvars.php');
 
@@ -38,6 +40,7 @@
       // если в переменную поступило значение имени файла
       if (!empty($new_picture)) {
          // проверка на: тип, вес, размер
+         
          if ((($new_picture_type == 'image/gif') || ($new_picture_type == 'image/jpeg') || ($new_picture_type == 'image/pjpeg') ||
          ($new_picture_type == 'image/png')) && ($new_picture_size > 0) && ($new_picture_size <= MM_MAXFILESIZE) &&
          ($new_picture_width <= MM_MAXIMGWIDTH) && ($new_picture_height <= MM_MAXIMGHEIGHT)) {
@@ -79,12 +82,12 @@
             // обновляем если есть новое изображение
             if (!empty($new_picture)) {
                $query = "UPDATE mismatch_user SET first_name = '$first_name', last_name = '$last_name', gender = '$gender', " .
-                  " birthdate = '$birthdate', city = '$city', state = '$state', picture = '$new_picture' WHERE user_id = '$user_id'";
+                  " birthdate = '$birthdate', city = '$city', state = '$state', picture = '$new_picture' WHERE user_id = '".$_COOKIE['user_id']."' ";
             }
             // иначе обновляем просто данные
             else {
                $query = "UPDATE mismatch_user SET first_name = '$first_name', last_name = '$last_name', gender = '$gender', " .
-                  " birthdate = '$birthdate', city = '$city', state = '$state' WHERE user_id = '$user_id'";
+                  " birthdate = '$birthdate', city = '$city', state = '$state' WHERE user_id = '".$_COOKIE['user_id']."' ";
             }
             mysqli_query($dbc, $query);
 
@@ -106,7 +109,7 @@
    else {
       // просто Запрос на данные пользователя
       // назначаем переменным текущие данные
-      $query = "SELECT first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '$user_id'";
+      $query = "SELECT first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '".$_COOKIE['user_id']."'";
       $data = mysqli_query($dbc, $query);
       $row = mysqli_fetch_array($data);
 
@@ -128,38 +131,44 @@
    mysqli_close($dbc);
 ?>
 
-   <!-- вывод формы для редактирования профиля -->
-   <form enctype="multipart/form-data" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-      <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
-      <fieldset>
-         <legend> Персональная информация </legend>
-         <label for="firstname">First name:</label>
-         <input type="text" id="firstname" name="firstname" value="<?php if (!empty($first_name)) echo $first_name; ?>" /><br />
-         <label for="lastname">Last name:</label>
-         <input type="text" id="lastname" name="lastname" value="<?php if (!empty($last_name)) echo $last_name; ?>" /><br />
-         <label for="gender">Gender:</label>
-         <select id="gender" name="gender">
-         <option value="M" <?php if (!empty($gender) && $gender == 'M') echo 'selected = "selected"'; ?>>Мужчина</option>
-         <option value="F" <?php if (!empty($gender) && $gender == 'F') echo 'selected = "selected"'; ?>>Женщина</option>
-         </select><br />
-         <label for="birthdate">Birthdate:</label>
-         <input type="text" id="birthdate" name="birthdate" value="<?php if (!empty($birthdate)) echo $birthdate; else echo 'YYYY-MM-DD'; ?>" /><br />
-         <label for="city">City:</label>
-         <input type="text" id="city" name="city" value="<?php if (!empty($city)) echo $city; ?>" /><br />
-         <label for="state">State:</label>
-         <input type="text" id="state" name="state" value="<?php if (!empty($state)) echo $state; ?>" /><br />
-         <!-- если старое изображение есть, то вывод наименования -->
-         <input type="hidden" name="old_picture" value="<?php if (!empty($old_picture)) echo $old_picture; ?>" />
-         <!-- изображение -->
-         <label for="new_picture">Изображение:</label>
-         <input type="file" id="new_picture" name="new_picture" />
-         <!-- вывод графического изображения -->
-         <?php if (!empty($old_picture)) {
+    <!-- вывод формы для редактирования профиля -->
+    <form enctype="multipart/form-data" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+        <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo MM_MAXFILESIZE; ?>" />
+        <fieldset>
+            <legend> Персональная информация </legend>
+            <label for="firstname">First name:</label>
+            <input type="text" id="firstname" name="firstname"
+                value="<?php if (!empty($first_name)) echo $first_name; ?>" /><br />
+            <label for="lastname">Last name:</label>
+            <input type="text" id="lastname" name="lastname"
+                value="<?php if (!empty($last_name)) echo $last_name; ?>" /><br />
+            <label for="gender">Пол</label>
+            <select id="gender" name="gender">
+                <option value="M" <?php if (!empty($gender) && $gender == 'M') echo 'selected = "selected"'; ?>>Мужчина
+                </option>
+                <option value="F" <?php if (!empty($gender) && $gender == 'F') echo 'selected = "selected"'; ?>>Женщина
+                </option>
+            </select><br />
+            <label for="birthdate">Дата рождения</label>
+            <input type="text" id="birthdate" name="birthdate"
+                value="<?php if (!empty($birthdate)) echo $birthdate; else echo 'YYYY-MM-DD'; ?>" /><br />
+            <label for="city">Город:</label>
+            <input type="text" id="city" name="city" value="<?php if (!empty($city)) echo $city; ?>" /><br />
+            <label for="state">Штат:</label>
+            <input type="text" id="state" name="state" value="<?php if (!empty($state)) echo $state; ?>" /><br />
+            <!-- если старое изображение есть, то вывод наименования -->
+            <input type="hidden" name="old_picture" value="<?php if (!empty($old_picture)) echo $old_picture; ?>" />
+            <!-- изображение -->
+            <label for="new_picture">Изображение:</label>
+            <input type="file" id="new_picture" name="new_picture" />
+            <!-- вывод графического изображения -->
+            <?php if (!empty($old_picture)) {
          echo '<img class="profile" src="' . MM_UPLOADPATH . $old_picture . '" alt="Profile Picture" />';
          } ?>
-      </fieldset>
-      <input type="submit" value="Save Profile" name="submit" />
-   </form>
+        </fieldset>
+        <input type="submit" value="Save Profile" name="submit" />
+    </form>
 
-</body> 
+</body>
+
 </html>
