@@ -1,14 +1,18 @@
 <?php
-    // если пользователь вошел в приложение, удаляем куки, выход из приложения
-    if (isset($_COOKIE['user_id'])) {
-        // установка момента истекания срока действия куки
-        // в результате Куки удаляются
-        setcookie('user_id','', time()-3600);
-        setcookie('username','', time()-3600);
+    // если пользователь вошел в приложение, удаляем переменные сессии, для выхода из приложения
+    session_start(); // открытие соединения для доступа к переменным
+    if (isset($_SESSION['user_id'])) {
+        // удаление переменных сессии, путем обнуления массива $_SESSION
+        $_SESSION = array();
 
-        //function console_log($data){ echo "<script>console.log('php_array: ".json_encode($data)."');</script>";}
-        //console_log('123');
+        //далее удаляем куку хранящую SID сессии
+        if (isset($_COOKIE[session_name()])) {
+            setcookie (session_name(),'',time()-3600); // путем установки срока действия часом ранее
+        }
     }
+    // закрытие сессии
+    session_destroy();
+    
     // далее автоматически переходим на главную страницу
     // формируем путь
     $home_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';

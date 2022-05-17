@@ -1,3 +1,6 @@
+<?php
+session_start(); // открытие соединения для доступа к переменным
+?>
 <!DOCTYPE html>
 <html>
 
@@ -11,14 +14,15 @@
     <h3>Mismatch - Где противоположности притягиваются!</h3>
 
     <?php
+  
   require_once('appvars.php');
   require_once('connectvars.php');
 
   // меню навигации зависит от входа
-  if (isset($_COOKIE['username'])) {
+  if (isset($_SESSION['username'])) {
     echo '&#10084; <a href="viewprofile.php"> Посмотреть профиль </a><br />';
     echo '&#10084; <a href="editprofile.php"> Редактировать профиль </a><br />';
-    echo '&#10084; <a href="logout.php"> Выход из приложения ('. $_COOKIE ['username'] .') </a><br />';
+    echo '&#10084; <a href="logout.php"> Выход из приложения ('. $_SESSION ['username'] .') </a><br />';
   }
   else {
     echo '&#10084; <a href="login.php"> Вход в приложение </a><br />';

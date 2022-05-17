@@ -1,14 +1,15 @@
 <?php
-   // ?
+   // сценарий входа
+   session_start(); // открытие соединения для доступа к переменным
    //require_once('connectvars.php');
 
    // обнуление сообщения об ошибки
    // ошибка - выводится когда это нужно
    $error_msg='';
 
+   // если $_SESSION['user_id'] - содержит данные - значит вход выполнен
    // если юзер не вошел в приложение, выполняется попытка войти
-   // если $_COOKIE['user_id'] - содержит данные - значит вход выполнен
-   if (!isset($_COOKIE['user_id'])) {
+   if (!isset($_SESSION['user_id'])) {
 
       if (isset($_POST['submit'])) {
          // Асинхронная проверка $_POST
@@ -35,10 +36,12 @@
             if (mysqli_num_rows($data) == 1) {
                // Пользовательская строка была найдена
                // процедура входа успешна
-               // Сохраняем в куки ID и ЛОГИН пользователя 
+               // Сохраняем в переменные сессии ID и ЛОГИН пользователя 
                $row = mysqli_fetch_array($data);
-               setcookie ('user_id', $row['user_id'], time()+(60*60*24*30)); // срок действия 30 дней
-               setcookie ('username', $row['username'], time()+(60*60*24*30)); // срок действия 30 дней
+               $_SESSION['user_id']  = $row['user_id'];
+               $_SESSION['username'] = $row['username'];
+               //setcookie ('user_id', $row['user_id'], time()+(60*60*24*30)); // срок действия 30 дней
+               //setcookie ('username', $row['username'], time()+(60*60*24*30)); // срок действия 30 дней
 
                // далее автоматически переходим на главную страницу
                // формируем путь
@@ -73,8 +76,8 @@
     <?php 
    // если куки не содержит данных, выводим сообщение об ошибке
    // и  форму для входа
-   // в противном случае подтверждение входа
-   if (empty($_COOKIE['user_id'])) {
+   // иначе подтверждение входа
+   if (empty($_SESSION['user_id'])) {
       echo '<p class="error">' . $error_msg . '</p>';
 ?>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
@@ -91,7 +94,7 @@
     <?php
    } else {
       // подтверждение успешного входа в приложение
-      echo '<p class="login"> Вы вошли как' . $_COOKIE['username'] . '!!!</p>';
+      echo '<p class="login"> Вы вошли как' . $_SESSION['username'] . '!!!</p>';
    }
 ?>
 

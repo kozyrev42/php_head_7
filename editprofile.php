@@ -1,3 +1,6 @@
+<?php
+session_start(); // открытие соединения для доступа к переменным
+?>
 <!DOCTYPE html>
 <html>
 
@@ -33,6 +36,7 @@
       $new_picture = mysqli_real_escape_string($dbc, trim($_FILES['new_picture']['name']));
       $new_picture_type = $_FILES['new_picture']['type'];
       $new_picture_size = $_FILES['new_picture']['size']; 
+      //
       list($new_picture_width, $new_picture_height) = getimagesize($_FILES['new_picture']['tmp_name']);
       $error = false;
 
@@ -82,12 +86,12 @@
             // обновляем если есть новое изображение
             if (!empty($new_picture)) {
                $query = "UPDATE mismatch_user SET first_name = '$first_name', last_name = '$last_name', gender = '$gender', " .
-                  " birthdate = '$birthdate', city = '$city', state = '$state', picture = '$new_picture' WHERE user_id = '".$_COOKIE['user_id']."' ";
+                  " birthdate = '$birthdate', city = '$city', state = '$state', picture = '$new_picture' WHERE user_id = '".$_SESSION['user_id']."' ";
             }
             // иначе обновляем просто данные
             else {
                $query = "UPDATE mismatch_user SET first_name = '$first_name', last_name = '$last_name', gender = '$gender', " .
-                  " birthdate = '$birthdate', city = '$city', state = '$state' WHERE user_id = '".$_COOKIE['user_id']."' ";
+                  " birthdate = '$birthdate', city = '$city', state = '$state' WHERE user_id = '".$_SESSION['user_id']."' ";
             }
             mysqli_query($dbc, $query);
 
@@ -109,7 +113,7 @@
    else {
       // просто Запрос на данные пользователя
       // назначаем переменным текущие данные
-      $query = "SELECT first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '".$_COOKIE['user_id']."'";
+      $query = "SELECT first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '".$_SESSION['user_id']."'";
       $data = mysqli_query($dbc, $query);
       $row = mysqli_fetch_array($data);
 
