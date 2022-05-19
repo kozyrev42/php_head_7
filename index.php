@@ -1,6 +1,15 @@
 <?php
-session_start(); // открытие соединения для доступа к переменным
+session_start(); // открытие соединения для доступа к переменным Сессии
+
+// Если переменные Сессии не установлены, попробуем установить их из cookie
+if (!isset($_SESSION['user_id'])) {
+  if (isset($_COOKIE['user_id']) && isset($_COOKIE['username'])) {
+    $_SESSION['user_id'] = $_COOKIE['user_id'];
+    $_SESSION['username'] = $_COOKIE['username'];
+  }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -13,7 +22,7 @@ session_start(); // открытие соединения для доступа 
 <body>
     <h3>Mismatch - Где противоположности притягиваются!</h3>
 
-    <?php
+<?php
   
   require_once('appvars.php');
   require_once('connectvars.php');
@@ -44,13 +53,26 @@ session_start(); // открытие соединения для доступа 
     // is_file() - функия определяет, является объект обычным файлом
     // filesize() - функция возвращает размер файла в байтах
     if (is_file(MM_UPLOADPATH . $row['picture']) && filesize(MM_UPLOADPATH . $row['picture']) > 0) {
+        // вывод фото участников
         echo '<tr><td><img src="' . MM_UPLOADPATH . $row['picture'] . '" alt="' . $row['first_name'] . '" /></td>';
     }
     else {
         // если пользователь не загрузил фото, выводим балванку
         echo '<tr><td><img src="' . MM_UPLOADPATH . 'nopic.jpg' . '" alt="' . $row['first_name'] . '" /></td>';
     }
-    echo '<td>' . $row['first_name'] . '</td></tr>';
+
+    // если Пользователь Вошел, доступны ссылки для просмотра информации о других пользователей
+    if (isset($_SESSION['user_id'])) {
+      // с переходом по ссылке, отправляем с GET, данные о просматриваемом участнике
+      echo '<td><a href="viewprofile.php?user_id=' . $row['user_id'] . '">' . $row['first_name'] . '</a></td></tr>';
+    }
+    else { 
+      // просто вывод имён
+      echo '<td>' . $row['first_name'] . '</td></tr>';
+    }
+    
+
+
   }
   echo '</table>';
 

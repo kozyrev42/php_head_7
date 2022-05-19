@@ -2,7 +2,7 @@
 <?php
   // определение Констант
   define('MM_UPLOADPATH', 'images/');   // путь до изображений
-  define('MM_MAXFILESIZE', 32768);      // 32 KB
-  define('MM_MAXIMGWIDTH', 120);        // 120 pixels
-  define('MM_MAXIMGHEIGHT', 120);       // 120 pixels
+  define('MM_MAXFILESIZE', 932768);      // 932 KB
+  define('MM_MAXIMGWIDTH', 300);        // 120 pixels
+  define('MM_MAXIMGHEIGHT', 300);       // 120 pixels
 ?>

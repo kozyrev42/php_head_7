@@ -6,6 +6,7 @@
    // обнуление сообщения об ошибки
    // ошибка - выводится когда это нужно
    $error_msg='';
+   //$link_home='';
 
    // если $_SESSION['user_id'] - содержит данные - значит вход выполнен
    // если юзер не вошел в приложение, выполняется попытка войти
@@ -25,7 +26,7 @@
          $user_username = mysqli_real_escape_string($dbc, trim($_POST['username']));
          $user_password = mysqli_real_escape_string($dbc, trim($_POST['password']));
 
-         // проверка на ввод 2 полей
+         // проверка на ввод Логина и Пароля
          if (!empty($user_username) && !empty($user_password)) {
             // поиск в базе введенных Логина и Пароля
             // выборка происходит при условии, если данные в базе совпадают с данными, введенными пользователем
@@ -40,8 +41,9 @@
                $row = mysqli_fetch_array($data);
                $_SESSION['user_id']  = $row['user_id'];
                $_SESSION['username'] = $row['username'];
-               //setcookie ('user_id', $row['user_id'], time()+(60*60*24*30)); // срок действия 30 дней
-               //setcookie ('username', $row['username'], time()+(60*60*24*30)); // срок действия 30 дней
+               // плюс сохраняем данные авторизации в куки
+               setcookie ('user_id', $row['user_id'], time()+(60*60*24*30)); // срок действия 30 дней
+               setcookie ('username', $row['username'], time()+(60*60*24*30)); // срок действия 30 дней
 
                // далее автоматически переходим на главную страницу
                // формируем путь
@@ -53,17 +55,19 @@
             else {
                // логин или пароль введены неверно, составляется сообщение об ошибке
                $error_msg = 'введите правильно Логин и Пароль';
+               $link_home = '<a href="index.php">  <<  вернуться на Главную </a>';
             }
          }
          else {
             // логин или пароль не введены, составляется сообщение об ошибке
             $error_msg = 'введите логин и пароль для входа';
+            $link_home = '<a href="index.php">  <<  вернуться на Главную </a>';
          }
       }
    }
 ?>
-<html>
 
+<html>
 <head>
     <meta charset="utf-8">
     <title> Вход в приложение </title>
@@ -74,11 +78,13 @@
     <h3>Несоответствия. Вход в приложение.</h3>
 
     <?php 
-   // если куки не содержит данных, выводим сообщение об ошибке
+   // если данных из Сессии нет, выводим сообщение об ошибке
    // и  форму для входа
    // иначе подтверждение входа
    if (empty($_SESSION['user_id'])) {
-      echo '<p class="error">' . $error_msg . '</p>';
+      echo '<p class="error">' . $error_msg . ' <br/>';
+      echo $link_home . '<br/>';
+
 ?>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
         <fieldset>

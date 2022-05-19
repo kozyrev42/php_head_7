@@ -13,6 +13,9 @@
     // закрытие сессии
     session_destroy();
     
+    // удаляем Данные из Куки
+    setcookie('user_id', '', time() - 3600);
+    setcookie('username', '', time() - 3600);
     // далее автоматически переходим на главную страницу
     // формируем путь
     $home_url = 'http://' . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . '/index.php';

@@ -1,6 +1,15 @@
 <?php
 session_start(); // открытие соединения для доступа к переменным
+
+// Если переменные Сессии не установлены, попробуем установить их из cookie
+if (!isset($_SESSION['user_id'])) {
+   if (isset($_COOKIE['user_id']) && isset($_COOKIE['username'])) {
+      $_SESSION['user_id'] = $_COOKIE['user_id'];
+      $_SESSION['username'] = $_COOKIE['username'];
+   }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -11,11 +20,21 @@ session_start(); // открытие соединения для доступа 
 </head>
 
 <body>
-    <h3>Mismatch - редактирование профиля </h3>
+    <h3> Веб-приложение - редактирование профиля </h3>
 
     <?php
    require_once('appvars.php');
    require_once('connectvars.php');
+
+   if (!isset($_SESSION['user_id'])) {
+      // если вход не выполнен, прозьба войти
+      echo '<p class="login"> Пожалуйста <a href="login.php"> Авторизуйтесь </a> для просмотра страницы.</p>';
+      // останавливаем дальнейшее выполнение сценария
+      exit();
+   } else {
+      // если вход выполнен
+      echo ('<p class="login"> Вы зашли как ' . $_SESSION['username'] . '. <a href="logout.php"> Выйти </a>.</p>');
+   }
 
    // подключение к базе
    $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
@@ -36,8 +55,10 @@ session_start(); // открытие соединения для доступа 
       $new_picture = mysqli_real_escape_string($dbc, trim($_FILES['new_picture']['name']));
       $new_picture_type = $_FILES['new_picture']['type'];
       $new_picture_size = $_FILES['new_picture']['size']; 
-      //
-      list($new_picture_width, $new_picture_height) = getimagesize($_FILES['new_picture']['tmp_name']);
+      // получение ширины и высоты изображения
+      @list($new_picture_width, $new_picture_height) = getimagesize($_FILES['new_picture']['tmp_name']);
+      //@$new_picture_width = imagesx($_FILES['new_picture']['tmp_name']);
+      //@$new_picture_height = imagesy($_FILES['new_picture']['tmp_name']);
       $error = false;
 
 
